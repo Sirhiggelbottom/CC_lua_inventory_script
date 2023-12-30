@@ -31,6 +31,7 @@ while true do
         local resultIron = chest1.pushItems(peripheral.getName(chest2), ironSlot, 1)
         local resultGold = chest1.pushItems(peripheral.getName(chest2), goldSlot, 1)
         debug("Moved iron: " .. resultIron .. "\nMoved gold: " .. resultGold)
+    end
     
     elseif chest1Size < 1 and chest2Size < 1 then
         debug("Chests aren't connected")
