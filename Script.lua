@@ -1,6 +1,7 @@
 local chest1 = peripheral.wrap("minecraft:chest_0")
 local chest2 = peripheral.wrap("minecraft:chest_1")
 local monitor = peripheral.wrap("monitor_2")
+local constValue = false
 
 local chest1Size = chest1.size()
 local chest2Size = chest2.size()
@@ -11,7 +12,7 @@ local function debug(text)
     monitor.write(text)
 end
 
-while true do
+repeat
     local hasIron = false
     local hasGold = false
     local ironSlot, goldSlot
@@ -48,5 +49,5 @@ while true do
     else
         debug("Iron or gold not found, or Chest2 already have ingots.")
     end
-end
-os.sleep(4)
+    os.sleep(4)
+until constValue
