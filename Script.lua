@@ -48,6 +48,5 @@ while true do
     else
         debug("Iron or gold not found, or Chest2 already have ingots.")
     end
-
-    os.sleep(4)
 end
+os.sleep(4)
