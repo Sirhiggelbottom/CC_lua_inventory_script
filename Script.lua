@@ -22,3 +22,4 @@ while true do
     end
 
     os.sleep(4)
+end
