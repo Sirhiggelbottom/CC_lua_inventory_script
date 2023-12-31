@@ -1,7 +1,7 @@
-local chest1 = peripheral.wrap("minecraft:chest_0")
-local chest2 = peripheral.wrap("minecraft:chest_1")
-local chest3 = peripheral.wrap("minecraft:chest_2")
-local chest4 = peripheral.wrap("minecraft:chest_3")
+local chestInput = peripheral.wrap("minecraft:chest_5")
+local chestCrafting = peripheral.wrap("minecraft:chest_1")
+local chestOutput = peripheral.wrap("minecraft:chest_2")
+local chestRefined = peripheral.wrap("minecraft:chest_3")
 
 local enderDrawer = peripheral.wrap("functionalstorage:oak_1_0")
 local goldDrawer = peripheral.wrap("functionalstorage:oak_1_1")
@@ -31,7 +31,7 @@ local function countInv(checkChest)
 end
 
 local function debug(text)
-    monitor.clear
+    monitor.clear()
     monitor.setCursorPos(1, 1)
     monitor.write(text)
 end
@@ -41,13 +41,33 @@ local function debugLine(text, line)
     monitor.write(text)
 end
 
+local function moveItems(slot1, amount1, slot2, amount2)
+    if amount1 then
+        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting)slot1, amount1)
+    else
+        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting)slot1)
+    end
+
+    if slot2 then
+        if amount2 then
+            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting)slot2, amount2)
+        else
+            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting)slot2)
+        end
+    end
+end
+
 local function searchInv()
     local hasIron = false
     local hasGold = false
-    local ironSlot, goldSlot
-    local items = chest1.list()
+    local hasBlazeRod = false
+    local hasDiamond = false
+    local ironSlot, goldSlot, blazeRodSlot, diamondSlot
+    local items = chestInput.list()
+    local resultEnergizeSteel, resultBlazingCrystal, nioticCrystal
 
-    for slot, item in pairs(items) do
+
+    for slot, item in pairs(items) do -- Checks if input chest has the ingredients for: Energized steel
         if item.name == "minecraft:iron_ingot" then
             hasIron = true
             ironSlot = slot
@@ -57,36 +77,87 @@ local function searchInv()
         end
     end
 
-    if hasIron and hasGold then
-        local resultIron = chest1.pushItems(peripheral.getName(chest2), ironSlot, 1)
-        local resultGold = chest1.pushItems(peripheral.getName(chest2), goldSlot, 1)
-        debug("Moved iron: " .. resultIron .. "\nMoved gold: " .. resultGold)
+    for slot1, item1 in pairs(items) do
+        if item1.name == "minecraft:blaze_rod" then -- Checks if input chest has the ingredients for: Blazing crystal
+            hasBlazeRod = true
+            blazeRodSlot = slot
+        break
+        elseif
+        item1.name == "minecraft:diamond" then -- Checks if input chest has the ingredients for: Niotic crystal
+            hasDiamond = true
+            diamondSlot = slot
+        end
+    end
+
+    if hasIron and hasGold and (hasBlazeRod or hasDiamond) then -- If input chest contains ingredients for more
+        -- than one item it starts with the Energized steel, and checks what other items are present after that.
+        
+        resultEnergizeSteel = moveItems(ironSlot, 1, goldSlot, 1)
+        debug("Moved iron: " .. resultEnergizeSteel .. "\nMoved gold: " .. resultEnergizeSteel)
+        os.sleep(4)
+
+        if hasBlazeRod then
+            resultBlazingCrystal = moveItems(blazeRodSlot, 1)
+            debug ("Moved blaze rod: " .. resultBlazingCrystal)
+            os.sleep(4)
+        elseif hasDiamond then
+            nioticCrystal = moveItems(diamondSlot, 1)
+            debug ("Moved diamond: " .. nioticCrystal)
+            os.sleep(4)
+        end
+    break
+
+    elseif hasIron and hasGold then
+        --local resultIron = chestInput.pushItems(peripheral.getName(chestCrafting), ironSlot, 1)
+        --local resultGold = chestInput.pushItems(peripheral.getName(chestCrafting), goldSlot, 1)
+
+        resultEnergizeSteel = moveItems(ironSlot, 1, goldSlot, 1)
+        debug("Moved iron: " .. resultEnergizeSteel .. "\nMoved gold: " .. resultEnergizeSteel)
+    break
+
+    elseif hasBlazeRod then
+        --local resultBlazeRod = chestInput.pushItems(peripheral.getName(chestCrafting), blazeRodSlot, 1)
+        resultBlazingCrystal = moveItems(blazeRodSlot, 1)
+        debug ("Moved blaze rod: " .. resultBlazingCrystal)
+    break
+    elseif hasDiamond then
+        --local resultDiamond = chestInput.pushItems(peripheral.getName(chestCrafting), diamondSlot, 1)
+        nioticCrystal = moveItems(diamondSlot, 1)
+        debug ("Moved diamond: " .. nioticCrystal)
     end
 end
 
 local function checkSize(inventorySize, inventory)
-    if inventorySize ~= inventory.getItemLimit(1) then
+    if inventorySize not inventory.getItemLimit(1) then
         inventorySize = inventory.getItemLimit(1)
     end
 end
 
+local function CraftingRdy()
+    local bool = false
+    if countInv(chestCrafting) < 1 then
+        bool = true
+    end
+    return bool
+end
 
 while constValue do
-    if countInv(chest1) >= 2 then
-        if countInv(2) < 2 then
+    
+    if countInv(chestInput) >= 2 then
+        if CraftingRdy() then
             searchInv()
         else
             debug("Chest 2 isn't ready")
         end
     end
 
-    if countInv(chest3) > 1 then
-        local moveItems = chest3.list()
+    if countInv(chestOutput) > 1 then
+        local moveItems = chestOutput.list()
         local moveSlot
 
         for slot, item in pairs(moveItems) do
             moveSlot = slot
-            local moveItem = chest3.pushItems(peripheral.getName(chest4), moveSlot)
+            local moveItem = chestOutput.pushItems(peripheral.getName(chestRefined), moveSlot)
             debug("Moving items from output chest to refined stoarge")
         end
     end
