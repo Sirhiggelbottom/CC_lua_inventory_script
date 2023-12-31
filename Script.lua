@@ -43,16 +43,16 @@ end
 
 local function moveItems(slot1, amount1, slot2, amount2)
     if amount1 then
-        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting)slot1, amount1)
+        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting), slot1, amount1)
     else
-        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting)slot1)
+        local itemToBeMoved1 = chestInput.pushItems(peripheral.getName(chestCrafting), slot1)
     end
 
     if slot2 then
         if amount2 then
-            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting)slot2, amount2)
+            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting), slot2, amount2)
         else
-            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting)slot2)
+            local itemToBeMoved2 = chestInput.pushItems(peripheral.getName(chestCrafting), slot2)
         end
     end
 end
@@ -105,21 +105,16 @@ local function searchInv()
             debug ("Moved diamond: " .. nioticCrystal)
             os.sleep(4)
         end
-    break
-
     elseif hasIron and hasGold then
         --local resultIron = chestInput.pushItems(peripheral.getName(chestCrafting), ironSlot, 1)
         --local resultGold = chestInput.pushItems(peripheral.getName(chestCrafting), goldSlot, 1)
 
         resultEnergizeSteel = moveItems(ironSlot, 1, goldSlot, 1)
         debug("Moved iron: " .. resultEnergizeSteel .. "\nMoved gold: " .. resultEnergizeSteel)
-    break
-
     elseif hasBlazeRod then
         --local resultBlazeRod = chestInput.pushItems(peripheral.getName(chestCrafting), blazeRodSlot, 1)
         resultBlazingCrystal = moveItems(blazeRodSlot, 1)
         debug ("Moved blaze rod: " .. resultBlazingCrystal)
-    break
     elseif hasDiamond then
         --local resultDiamond = chestInput.pushItems(peripheral.getName(chestCrafting), diamondSlot, 1)
         nioticCrystal = moveItems(diamondSlot, 1)
@@ -128,7 +123,7 @@ local function searchInv()
 end
 
 local function checkSize(inventorySize, inventory)
-    if inventorySize not inventory.getItemLimit(1) then
+    if inventorySize ~= inventory.getItemLimit(1) then
         inventorySize = inventory.getItemLimit(1)
     end
 end
