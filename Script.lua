@@ -138,7 +138,7 @@ end
 
 while constValue do
     
-    if countInv(chestInput) >= 2 then
+    if countInv(chestInput) > 0 then
         if CraftingRdy() then
             searchInv()
         else
