@@ -4,11 +4,24 @@ local chest3 = peripheral.wrap("minecraft:chest_2")
 local chest4 = peripheral.wrap("minecraft:chest_3")
 
 local monitor = peripheral.wrap("monitor_2")
-local constValue = false
 
 local chest1Size = chest1.size()
 local chest2Size = chest2.size()
 local chest3Size = chest3.size()
+
+local function countInv(checkChest)
+    local chest = checkChest
+    local totalItemCount = 0
+    local items = chest.list()  -- This gets a table of all the items in the chest
+
+    for slot, itemDetail in pairs(items) do
+        totalItemCount = totalItemCount + itemDetail.count  -- Adds the count of items in the slot to the total
+    end
+
+    return totalItemCount
+end
+
+
 
 local function debug(text)
     monitor.clear()
@@ -43,24 +56,23 @@ end
 
 while true
 
-    if chest1Size > 2 then
-        if chest2Size < 2 then
+    if countInv(chest1) > 2 then
+        if countInv(chest2) < 2 then
             searchInv()
-        else chest2Size >= 2 then
+        else countInv(chest2) >= 2 then
             debug("Chest 2 is not ready")
         end
-
-    elseif chest1Size < 1 and chest2Size < 1 then
-        if chest1Size < 1 then
+    elseif countInv(chest1) < 1 and countInv(chest2) < 1 then
+        if countInv(chest1) < 1 then
             debug("Chest 1 isn't connected")
         break
         
-        elseif chest2Size < 1 then
+        elseif countInv(chest2) < 1 then
             debug("Chest 2 isn't connected")
         end
     end
 
-    if chest3Size > 1 then
+    if countInv(chest3) > 1 then
         local moveItems = chest3.list()
         local moveSlot
 
