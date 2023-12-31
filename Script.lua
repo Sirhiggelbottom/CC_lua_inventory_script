@@ -50,11 +50,11 @@ local function searchInv()
         local resultIron = chest1.pushItems(peripheral.getName(chest2), ironSlot, 1)
         local resultGold = chest1.pushItems(peripheral.getName(chest2), goldSlot, 1)
         debug("Moved iron: " .. resultIron .. "\nMoved gold: " .. resultGold)
-    break
+    end
 
 end
 
-while true
+while true do
 
     if countInv(chest1) > 2 then
         if countInv(chest2) < 2 then
